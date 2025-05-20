@@ -1,0 +1,6 @@
+.idea/
+cmake-build-debug/
+CMakeLists.txt
+step1/client
+step1/disk
+*.vhd
