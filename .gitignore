@@ -3,4 +3,10 @@ cmake-build-debug/
 CMakeLists.txt
 step1/client
 step1/disk
-*.vhd
+step2/client
+step2/fs
+step3/client
+step3/disk
+step3/fs
+*.raw
+*.tar

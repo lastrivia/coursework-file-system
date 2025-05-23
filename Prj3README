@@ -1,0 +1,37 @@
+Prj3README            # This file. Provides an overview of the project structure
+makefile              # Top-level makefile for packing and cleaning
+report.pdf            # Project design and implementation documentation (TODO)
+typescript.md         # Project testing guide (TODO)
+
+src/                  # Source code of the project
+├── disk_interface.h      # Abstract base interface for storage device operations
+├── disk_view.h           # Syntax-level abstraction of storage access
+├── fs.h                  # Core file system implementation, including file and directory handles
+├── fs_allocator.h        # Disk space allocation strategy for the file system
+├── fs_block_structure.h  # Block data structure definitions used in the file system
+├── fs_server.h           # File system server and network protocol definitions for FS operations
+├── fs_shell.h            # Shell client of the file system; parses commands and interacts with the FS server
+├── io_protocol.h         # Network protocol and client interface definitions for storage operations
+├── mem_storage.h         # In-memory virtual storage implementation (used in Step 2)
+├── raw_shell.h           # Shell client for direct storage operations; communicates with virtual disk server (used in Step 1)
+├── virtual_drive.h       # Persistent virtual disk simulation implementation
+└── utils/                # Utility modules
+    ├── except.h              # Exception handling utilities
+    ├── misc.h                # Miscellaneous helpers
+    └── socket.h              # Encapsulation of socket and related operations
+
+step1/                # Step 1 source files
+├── client.cpp            # Storage client
+├── disk.cpp              # Virtual disk implementation
+└── makefile              # Step 1 makefile
+
+step2/                # Step 2 source files
+├── client.cpp            # File system client
+├── fs.cpp                # File system with in-memory data storage
+└── makefile              # Step 2 makefile
+
+step3/                # Step 3 source files
+├── client.cpp            # File system client
+├── disk.cpp              # Virtual disk
+├── fs.cpp                # File system
+└── makefile              # Step 3 makefile

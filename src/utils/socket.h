@@ -85,6 +85,18 @@ namespace cs2313 {
             recv_raw(reinterpret_cast<char *>(&t), sizeof(T));
         }
 
+        void send_str(const std::string &str) {
+            send(str.length());
+            send_raw(str.data(), str.length());
+        }
+
+        void recv_str(std::string &str) {
+            size_t len;
+            recv(len);
+            str.resize(len);
+            recv_raw(str.data(), len);
+        }
+
         void terminate() {
             if (!closed_) {
                 close(sockfd_);
