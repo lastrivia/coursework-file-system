@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    uint64_t fs_port = std::stoull(argv[2]);
+    uint64_t fs_port = std::stoull(argv[1]);
     if (fs_port < 1000 || fs_port > 65535) {
         std::cout << "Invalid port: " << fs_port << " (expected 1000 - 65535)\n";
         return 1;

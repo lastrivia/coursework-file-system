@@ -125,6 +125,8 @@ namespace cs2313 {
             node.attrib_bits_h = 0;
             node.attrib_bits_l = 0;
             node.folder_bit() = false;
+            node.size_blocks = 0;
+            node.size_offset = 0;
             node.name[0] = 0;
             node.timestamp = time(nullptr);
             node.parent_addr = 0;

@@ -99,7 +99,7 @@ namespace cs2313 {
                             connection_socket.send(FS_REPLY_OK);
                             connection_socket.send(size);
                             for (auto &s: ls)
-                                connection_socket.send(s);
+                                connection_socket.send_str(s);
                         }
                         break;
 
