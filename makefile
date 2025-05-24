@@ -1,3 +1,8 @@
+all:
+	make -C step1
+	make -C step2
+	make -C step3
+
 submit:
 	mkdir -p submit
 	cp -r src submit/
@@ -7,7 +12,9 @@ submit:
 	cp step3/*.cpp step3/makefile submit/step3
 	cp -f makefile Prj3README submit/
 	tar -cvf submit.tar submit/*
-	rm -rf submit
 
 clean:
+	make -C step1 clean
+	make -C step2 clean
+	make -C step3 clean
 	rm -rf submit submit.tar

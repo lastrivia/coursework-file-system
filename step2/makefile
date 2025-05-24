@@ -1,5 +1,7 @@
 HEADERS := $(shell find ../src -name "*.h")
 
+all: client fs
+
 client: client.cpp $(HEADERS)
 	g++ client.cpp -o client -std=c++20
 fs: fs.cpp $(HEADERS)
