@@ -6,6 +6,7 @@
 #include <string>
 
 #include "fs_server.h"
+#include "utils/shell_style.h"
 #include "utils/socket.h"
 
 namespace cs2313 {
@@ -27,7 +28,7 @@ namespace cs2313 {
 
         bool exit_flag = false;
         while (!exit_flag) {
-            std::cout << path_prompt_ << "$ ";
+            std::cout << styled("file-system", STYLE_GREEN, STYLE_BOLD) << ":" << styled(path_prompt_, STYLE_BLUE, STYLE_BOLD) << "$ ";
             std::string input_line;
             std::getline(std::cin, input_line);
             if (input_line.empty()) continue;

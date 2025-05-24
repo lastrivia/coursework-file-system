@@ -6,6 +6,7 @@
 #include <string>
 #include <cstring>
 #include "disk_interface.h"
+#include "utils/shell_style.h"
 
 namespace cs2313 {
 
@@ -30,7 +31,15 @@ namespace cs2313 {
         void run() {
 
             std::string line;
-            while (std::getline(std::cin, line)) {
+
+            const std::string styled_yes = styled("Yes", STYLE_GREEN, STYLE_BOLD);
+            const std::string styled_no = styled("No", STYLE_RED, STYLE_BOLD);
+
+            while (true) {
+                std::cout << styled("raw", STYLE_BLUE, STYLE_BOLD) << "$ ";
+                if (!std::getline(std::cin, line))
+                    break;
+
                 try {
                     std::istringstream iss(line);
                     std::string cmd;
@@ -46,14 +55,14 @@ namespace cs2313 {
                                 uint64_t addr = c * sectors_per_cylinder_ + s;
                                 disk_.read(addr, buf_);
 
-                                std::cout << "Yes ";
+                                std::cout << styled_yes << " ";
                                 std::cout.write(buf_, bytes_per_sector_);
                                 std::cout << std::endl;
                             } else {
-                                std::cout << "No" << std::endl;
+                                std::cout << styled_no << std::endl;
                             }
                         } else {
-                            std::cout << "No" << std::endl;
+                            std::cout << styled_no << std::endl;
                         }
 
                     } else if (cmd == "W") {
@@ -68,12 +77,12 @@ namespace cs2313 {
                                 memset(buf_, 0, bytes_per_sector_ + 1);
                                 memcpy(buf_, data.data(), std::min(bytes_per_sector_, data.size()));
                                 disk_.write(addr, buf_);
-                                std::cout << "Yes" << std::endl;
+                                std::cout << styled_yes << std::endl;
                             } else {
-                                std::cout << "No" << std::endl;
+                                std::cout << styled_no << std::endl;
                             }
                         } else {
-                            std::cout << "No" << std::endl;
+                            std::cout << styled_no << std::endl;
                         }
 
                     } else if (cmd == "E") {
@@ -82,11 +91,11 @@ namespace cs2313 {
                         break;
 
                     } else {
-                        std::cout << "Invalid command" << std::endl;
+                        std::cout << "Unknown command: " << cmd << std::endl;
                     }
 
                 } catch (except &e) {
-                    std::cout << "[ERROR] " << e;
+                    std::cout << styled("[ERROR] ", STYLE_RED) << e;
                 }
             }
         }
