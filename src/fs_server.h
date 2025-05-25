@@ -5,28 +5,10 @@
 #include <thread>
 
 #include "fs.h"
+#include "fs_protocol.h"
 #include "utils/socket.h"
 
 namespace cs2313 {
-
-    typedef uint8_t fs_instr;
-    static constexpr fs_instr FS_INSTR_FORMAT = 15,
-                              FS_INSTR_CD = 0,
-                              FS_INSTR_LS = 1,
-                              FS_INSTR_MK = 2,
-                              FS_INSTR_RM = 3,
-                              FS_INSTR_MKDIR = 4,
-                              FS_INSTR_RMDIR = 5,
-                              FS_INSTR_FILE_CAT = 8,
-                              FS_INSTR_FILE_W = 9,
-                              FS_INSTR_FILE_I = 10,
-                              FS_INSTR_FILE_D = 11;
-
-    typedef uint8_t fs_reply;
-    static constexpr fs_reply FS_REPLY_INITIALIZED = 0x10,
-                              FS_REPLY_INITIALIZED_NO_FORMAT = 0x11,
-                              FS_REPLY_OK = 0x20,
-                              FS_REPLY_REJECT = 0x30; // todo detailed
 
     class fs_server {
     public:
@@ -49,9 +31,9 @@ namespace cs2313 {
 
             try {
                 if (fs_.formatted())
-                    connection_socket.send(FS_REPLY_INITIALIZED);
+                    connection_socket.send(FS_CONNECTED_REPLY_OK);
                 else
-                    connection_socket.send(FS_REPLY_INITIALIZED_NO_FORMAT);
+                    connection_socket.send(FS_CONNECTED_REPLY_NO_FORMAT);
             } catch (except &e) {
                 throw; // todo
             }
@@ -84,7 +66,7 @@ namespace cs2313 {
                             } catch (except &e) {
                                 switch (e.error_code()) {
                                     case ERROR_FS_NAME_NOT_EXIST:
-                                        connection_socket.send(FS_REPLY_REJECT);
+                                        connection_socket.send(error_reply(e.error_code()));
                                         break;
                                     default:
                                         throw;
@@ -111,10 +93,11 @@ namespace cs2313 {
                                 connection_socket.send(FS_REPLY_OK);
                             } catch (except &e) {
                                 switch (e.error_code()) {
-                                    case ERROR_FS_FULL_NODE:
+                                    case ERROR_FS_CAPACITY_EXCEEDED:
                                     case ERROR_FS_NAME_ALREADY_EXIST:
                                     case ERROR_FS_NAME_TOO_LONG:
-                                        connection_socket.send(FS_REPLY_REJECT);
+                                    case ERROR_FS_NAME_INVALID:
+                                        connection_socket.send(error_reply(e.error_code()));
                                         break;
                                     default:
                                         throw;
@@ -131,9 +114,9 @@ namespace cs2313 {
                                 connection_socket.send(FS_REPLY_OK);
                             } catch (except &e) {
                                 switch (e.error_code()) {
-                                    case ERROR_FS_HANDLE_BUSY:
+                                    case ERROR_FS_BUSY_HANDLE:
                                     case ERROR_FS_NAME_NOT_EXIST:
-                                        connection_socket.send(FS_REPLY_REJECT);
+                                        connection_socket.send(error_reply(e.error_code()));
                                         break;
                                     default:
                                         throw;
@@ -152,7 +135,7 @@ namespace cs2313 {
                             } catch (except &e) {
                                 switch (e.error_code()) {
                                     case ERROR_FS_NAME_NOT_EXIST:
-                                        connection_socket.send(FS_REPLY_REJECT);
+                                        connection_socket.send(error_reply(e.error_code()));
                                         break;
                                     default:
                                         throw;
@@ -171,8 +154,8 @@ namespace cs2313 {
                             } catch (except &e) {
                                 switch (e.error_code()) {
                                     case ERROR_FS_NAME_NOT_EXIST:
-                                    case ERROR_FS_FULL_NODE:
-                                        connection_socket.send(FS_REPLY_REJECT);
+                                    case ERROR_FS_CAPACITY_EXCEEDED:
+                                        connection_socket.send(error_reply(e.error_code()));
                                         break;
                                     default:
                                         throw;
@@ -196,7 +179,7 @@ namespace cs2313 {
                         break;
 
                         default:
-                            connection_socket.send(FS_REPLY_REJECT);
+                            connection_socket.send(FS_REPLY_UNKNOWN_ERROR);
                             break;
                     }
                 } catch (except &e) {

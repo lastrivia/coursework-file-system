@@ -16,12 +16,12 @@ namespace cs2313 {
         ERROR_VIRTUAL_DRIVE_FILE_CREATE = 0x0202,
         ERROR_VIRTUAL_DRIVE_MMAP = 0x0203,
         ERROR_DISK_ADDR_INVALID = 0x0241,
-        ERROR_FS_HANDLE_BUSY = 0x0421,
-        ERROR_FS_HANDLE_INVALID = 0x0422,
-        ERROR_FS_FULL_NODE = 0x0431,
-        ERROR_FS_NAME_NOT_EXIST = 0x0441,
-        ERROR_FS_NAME_ALREADY_EXIST = 0x0442,
-        ERROR_FS_NAME_TOO_LONG = 0x0443,
+        ERROR_FS_BUSY_HANDLE = 0x0411,
+        ERROR_FS_CAPACITY_EXCEEDED = 0x0412,
+        ERROR_FS_NAME_NOT_EXIST = 0x0421,
+        ERROR_FS_NAME_ALREADY_EXIST = 0x0422,
+        ERROR_FS_NAME_TOO_LONG = 0x0423,
+        ERROR_FS_NAME_INVALID = 0x0424,
     };
 
     class except : public std::exception {
@@ -43,7 +43,7 @@ namespace cs2313 {
 
         int system_errno() const noexcept { return system_errno_; }
 
-        int error_code() const noexcept { return error_code_; }
+        ERROR_CODE error_code() const noexcept { return error_code_; }
 
         const std::string &message() const noexcept { return message_; }
 

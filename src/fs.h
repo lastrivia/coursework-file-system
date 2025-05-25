@@ -79,6 +79,13 @@ namespace cs2313 {
                     --it->second;
             }
         }
+
+        static bool is_name_valid(const std::string &name) {
+            return !name.empty()
+                   && name != "."
+                   && name != ".."
+                   && name.find('/') == std::string::npos;
+        }
     };
 
     class fs_handle {
@@ -243,13 +250,15 @@ namespace cs2313 {
         }
 
         void create(const char *name, bool is_folder) {
+            if (!file_system::is_name_valid(name))
+                throw except(ERROR_FS_NAME_INVALID);
             if (strlen(name) >= 0x40)
-                throw except(ERROR_FS_NAME_TOO_LONG); // todo check if valid
+                throw except(ERROR_FS_NAME_TOO_LONG);
 
             std::lock_guard<std::mutex> lock(fs_.data_mutex_);
             directory_node node = fs_.disk_[addr_];
             if (node.header.entries == node.header.entries_capacity)
-                throw except(ERROR_FS_FULL_NODE); // todo bp tree split
+                throw except(ERROR_FS_CAPACITY_EXCEEDED); // todo bp tree split
             for (uint32_t i = 0; i < node.header.entries; ++i) {
                 directory_node child = fs_.disk_[node.file_pointer(i)];
                 if (strcmp(child.name, name) == 0)
@@ -285,7 +294,7 @@ namespace cs2313 {
             {
                 std::lock_guard<std::mutex> count_lock(fs_.count_mutex_);
                 if (fs_.handle_instance_count_.contains(recycle_addr))
-                    throw except(ERROR_FS_HANDLE_BUSY);
+                    throw except(ERROR_FS_BUSY_HANDLE);
             }
 
             if (index != node.header.entries - 1)
@@ -306,6 +315,8 @@ namespace cs2313 {
             for (uint32_t i = 0; i < node.header.entries; ++i) {
                 directory_node child = fs_.disk_[node.file_pointer(i)];
                 ret.emplace_back(child.name);
+                if (child.folder_bit())
+                    ret.back().append("/");
             }
             return ret;
         }
