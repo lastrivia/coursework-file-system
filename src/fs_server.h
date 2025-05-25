@@ -164,13 +164,55 @@ namespace cs2313 {
                         }
                         break;
 
-                        case FS_INSTR_FILE_I:
-                            // todo later
-                            break;
+                        case FS_INSTR_FILE_I: {
+                            // todo independent impl
+                            uint64_t pos;
+                            connection_socket.recv_str(str_buf);
+                            connection_socket.recv(pos);
+                            connection_socket.recv_str(data_buf);
+                            try {
+                                fs_file_handle file = current_folder.open(str_buf.c_str());
+                                std::string content = file.read_all();
+                                content.insert(pos, data_buf);
+                                file.write_all(content.c_str());
+                                connection_socket.send(FS_REPLY_OK);
+                            } catch (except &e) {
+                                switch (e.error_code()) {
+                                    case ERROR_FS_NAME_NOT_EXIST:
+                                    case ERROR_FS_CAPACITY_EXCEEDED:
+                                        connection_socket.send(error_reply(e.error_code()));
+                                        break;
+                                    default:
+                                        throw;
+                                }
+                            }
+                        }
+                        break;
 
-                        case FS_INSTR_FILE_D:
-                            // todo later
-                            break;
+                        case FS_INSTR_FILE_D: {
+                            // todo independent impl
+                            uint64_t pos, len;
+                            connection_socket.recv_str(str_buf);
+                            connection_socket.recv(pos);
+                            connection_socket.recv(len);
+                            try {
+                                fs_file_handle file = current_folder.open(str_buf.c_str());
+                                std::string content = file.read_all();
+                                content.erase(pos, len);
+                                file.write_all(content.c_str());
+                                connection_socket.send(FS_REPLY_OK);
+                            } catch (except &e) {
+                                switch (e.error_code()) {
+                                    case ERROR_FS_NAME_NOT_EXIST:
+                                    case ERROR_FS_CAPACITY_EXCEEDED:
+                                        connection_socket.send(error_reply(e.error_code()));
+                                        break;
+                                    default:
+                                        throw;
+                                }
+                            }
+                        }
+                        break;
 
                         case FS_INSTR_FORMAT: {
                             fs_.format();

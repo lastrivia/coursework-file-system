@@ -154,6 +154,35 @@ namespace cs2313 {
                     if (reply != FS_REPLY_OK) {
                         std::cout << fail_prompt(reply, false, name) << std::endl;
                     }
+                }  else if (cmd == "i") {
+                    std::string data;
+                    uint64_t pos;
+                    if (!(iss >> name >> pos) || !std::getline(iss >> std::ws, data)) {
+                        std::cout << "Invalid command format" << std::endl;
+                        continue;
+                    }
+                    client_socket_.send(FS_INSTR_FILE_I);
+                    client_socket_.send_str(name);
+                    client_socket_.send(pos);
+                    client_socket_.send_str(data);
+                    client_socket_.recv(reply);
+                    if (reply != FS_REPLY_OK) {
+                        std::cout << fail_prompt(reply, false, name) << std::endl;
+                    }
+                }  else if (cmd == "d") {
+                    uint64_t pos, len;
+                    if (!(iss >> name >> pos >> len)) {
+                        std::cout << "Invalid command format" << std::endl;
+                        continue;
+                    }
+                    client_socket_.send(FS_INSTR_FILE_D);
+                    client_socket_.send_str(name);
+                    client_socket_.send(pos);
+                    client_socket_.send(len);
+                    client_socket_.recv(reply);
+                    if (reply != FS_REPLY_OK) {
+                        std::cout << fail_prompt(reply, false, name) << std::endl;
+                    }
                 } else {
                     std::cout << "Unknown command: " << cmd << std::endl;
                 }

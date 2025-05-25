@@ -191,17 +191,17 @@ namespace cs2313 {
             fs_.disk_[addr_] = node;
         }
 
-        void insert(uint64_t pos, const char *data) {
-            std::lock_guard<std::mutex> lock(fs_.data_mutex_);
-            directory_node node = fs_.disk_[addr_];
-            // todo
-        }
-
-        void erase(uint64_t pos, uint64_t len) {
-            std::lock_guard<std::mutex> lock(fs_.data_mutex_);
-            directory_node node = fs_.disk_[addr_];
-            // todo
-        }
+        // void insert(uint64_t pos, const char *data) {
+        //     std::lock_guard<std::mutex> lock(fs_.data_mutex_);
+        //     directory_node node = fs_.disk_[addr_];
+        //     // todo independent impl
+        // }
+        //
+        // void erase(uint64_t pos, uint64_t len) {
+        //     std::lock_guard<std::mutex> lock(fs_.data_mutex_);
+        //     directory_node node = fs_.disk_[addr_];
+        //     // todo independent impl
+        // }
 
     private:
     };
