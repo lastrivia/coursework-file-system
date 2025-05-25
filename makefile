@@ -10,7 +10,7 @@ submit:
 	cp step1/*.cpp step1/makefile submit/step1
 	cp step2/*.cpp step2/makefile submit/step2
 	cp step3/*.cpp step3/makefile submit/step3
-	cp -f makefile Prj3README submit/
+	cp -f makefile Prj3README typescript.md submit/
 	tar -cvf submit.tar submit/*
 
 clean:
