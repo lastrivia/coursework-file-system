@@ -1,9 +1,9 @@
 #include <iostream>
 
-#include "../src/io_protocol.h"
+#include "../src/disk_client.h"
 #include "../src/fs.h"
 #include "../src/fs_server.h"
-#include "../src/mem_storage.h"
+#include "../src/ram_disk.h"
 #include "../src/utils/misc.h"
 
 int main(int argc, char *argv[]) {
@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
     try {
 
         {
-            cs2313::mem_storage mem(1, 4096, 256);
+            cs2313::ram_disk mem(1, 4096, 256);
             cs2313::file_system fs(mem);
             cs2313::fs_server server(fs, fs_port);
             server.accept_connections();

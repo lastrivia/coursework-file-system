@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "../src/io_protocol.h"
+#include "../src/disk_client.h"
 #include "../src/fs.h"
 #include "../src/fs_server.h"
 #include "../src/utils/misc.h"
@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
     try {
 
         {
-            cs2313::disk_storage_client client("127.0.0.1", static_cast<uint16_t>(disk_port));
+            cs2313::disk_client client("127.0.0.1", static_cast<uint16_t>(disk_port));
             client.start_handler();
             cs2313::file_system fs(client);
             cs2313::fs_server server(fs, fs_port);

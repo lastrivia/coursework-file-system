@@ -1,5 +1,5 @@
-#ifndef IO_PROTOCOL_H
-#define IO_PROTOCOL_H
+#ifndef DISK_CLIENT_H
+#define DISK_CLIENT_H
 
 #include <thread>
 #include <atomic>
@@ -7,28 +7,28 @@
 #include <semaphore>
 #include <unordered_map>
 
-#include "disk_interface.h"
+#include "storage_interface.h"
 #include "utils/socket.h"
 
 namespace cs2313 {
 
-    struct client_transaction {
+    struct disk_client_transaction {
         std::binary_semaphore sig_wake_;
         char *writeback_data_;
 
-        explicit client_transaction(char *writeback_data = nullptr) :
+        explicit disk_client_transaction(char *writeback_data = nullptr) :
             sig_wake_(0),
             writeback_data_(writeback_data) {}
 
-        client_transaction(const client_transaction &) = delete;
+        disk_client_transaction(const disk_client_transaction &) = delete;
 
-        client_transaction &operator=(const client_transaction &) = delete;
+        disk_client_transaction &operator=(const disk_client_transaction &) = delete;
     };
 
-    class disk_storage_client : public disk_interface {
+    class disk_client : public storage_interface {
 
     public:
-        disk_storage_client(const std::string &server_addr, const uint16_t server_port) :
+        disk_client(const std::string &server_addr, const uint16_t server_port) :
             tid_counter_(0),
             client_socket_(server_addr, server_port),
             handler_loop_(false),
@@ -46,7 +46,7 @@ namespace cs2313 {
         void start_handler() {
             if (!handler_loop_.load()) {
                 handler_loop_.store(true);
-                handler_thread_ = std::thread(&disk_storage_client::response_handler, this); // TODO except
+                handler_thread_ = std::thread(&disk_client::response_handler, this); // TODO except
             }
         }
 
@@ -54,7 +54,7 @@ namespace cs2313 {
 
         void read(const uint64_t sector_addr, char *data) override {
             uint32_t tid = tid_step();
-            client_transaction transaction(data);
+            disk_client_transaction transaction(data);
             waiting_list_add(tid, &transaction); //
             {
                 std::lock_guard<std::mutex> lock(socket_write_mutex_);
@@ -67,7 +67,7 @@ namespace cs2313 {
 
         void write(const uint64_t sector_addr, const char *data) override {
             uint32_t tid = tid_step();
-            client_transaction transaction;
+            disk_client_transaction transaction;
             waiting_list_add(tid, &transaction); //
             {
                 std::lock_guard<std::mutex> lock(socket_write_mutex_);
@@ -81,7 +81,7 @@ namespace cs2313 {
 
         void shutdown() override {
             uint32_t tid = tid_step();
-            client_transaction transaction;
+            disk_client_transaction transaction;
             waiting_list_add(tid, &transaction); //
             {
                 std::lock_guard<std::mutex> lock(socket_write_mutex_);
@@ -96,7 +96,7 @@ namespace cs2313 {
             return description_;
         }
 
-        ~disk_storage_client() override {
+        ~disk_client() override {
             if (handler_loop_.load()) {
                 handler_loop_.store(false);
                 if (handler_thread_.joinable())
@@ -115,10 +115,10 @@ namespace cs2313 {
             return tid;
         }
 
-        std::unordered_map<int, client_transaction *> waiting_list_;
+        std::unordered_map<int, disk_client_transaction *> waiting_list_;
         std::mutex list_mutex_;
 
-        void waiting_list_add(const uint32_t tid, client_transaction *transaction) {
+        void waiting_list_add(const uint32_t tid, disk_client_transaction *transaction) {
             std::lock_guard<std::mutex> lock(list_mutex_);
             waiting_list_[tid] = transaction;
         }
@@ -140,7 +140,7 @@ namespace cs2313 {
                     uint32_t tid;
                     client_socket_.recv(instr);
                     client_socket_.recv(tid);
-                    client_transaction *transaction = nullptr; //
+                    disk_client_transaction *transaction = nullptr; //
 
                     {
                         std::lock_guard<std::mutex> lock(list_mutex_);

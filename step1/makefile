@@ -7,4 +7,4 @@ client: client.cpp $(HEADERS)
 disk: disk.cpp $(HEADERS)
 	g++ disk.cpp -o disk -std=c++20
 clean:
-	rm -f client disk *.raw
+	find . -type f ! -name '*.cpp' ! -name 'makefile' -delete

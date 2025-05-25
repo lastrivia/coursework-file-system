@@ -1,13 +1,13 @@
 #ifndef DISK_VIEW_H
 #define DISK_VIEW_H
 
-#include "disk_interface.h"
+#include "storage_interface.h"
 
 namespace cs2313 {
 
     class disk_view {
     public:
-        disk_view(disk_interface &disk): disk_(disk) {}
+        disk_view(storage_interface &disk): disk_(disk) {}
 
         class storage_proxy {
         public:
@@ -36,10 +36,10 @@ namespace cs2313 {
 
         private:
             friend class disk_view;
-            disk_interface &disk_;
+            storage_interface &disk_;
             uint64_t addr_;
 
-            storage_proxy(disk_interface &disk, const uint64_t addr):
+            storage_proxy(storage_interface &disk, const uint64_t addr):
                 disk_(disk), addr_(addr) {}
         };
 
@@ -48,7 +48,7 @@ namespace cs2313 {
         }
 
     private:
-        disk_interface &disk_;
+        storage_interface &disk_;
     };
 
 }

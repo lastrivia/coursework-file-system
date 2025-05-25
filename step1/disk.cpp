@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
     uint64_t bytes_per_sector = 256;
     uint64_t delay_us = 0;
     uint16_t port = 0;
-    const char *filename = nullptr;
+    std::string filename;
 
     using cs2313::is_uint;
 
@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
         } else if (arg == "-p" && i + 1 < argc && is_uint(argv[i + 1])) {
             ++i;
             uint64_t arg_port = std::stoull(argv[i]);
-            if(arg_port < 1000 || arg_port > 65535) {
+            if (arg_port < 1000 || arg_port > 65535) {
                 std::cout << "Invalid port: " << arg_port << " (expected 1000 - 65535)\n";
                 return 1;
             }
@@ -44,13 +44,17 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    if (cylinders == 0 || sectors_per_cylinder == 0 || port == 0 || !filename) {
+    if (cylinders == 0 || sectors_per_cylinder == 0 || port == 0 || filename.empty()) {
         std::cout << "Usage: disk filename -c cylinders -s sectors_per_cylinder [-b bytes_per_sector=256] [-d delay_us=0] -p port \n";
         return 1;
     }
+    if (filename.size() < 4 || filename.compare(filename.size() - 4, 4, ".raw") != 0) {
+        filename += ".raw";
+    }
 
     try {
-        cs2313::virtual_drive drive(cylinders, sectors_per_cylinder, bytes_per_sector, delay_us, filename, port);
+
+        cs2313::virtual_drive drive(cylinders, sectors_per_cylinder, bytes_per_sector, delay_us, filename.c_str(), port);
         drive.start();
         drive.wait();
 

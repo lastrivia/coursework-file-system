@@ -1,3 +1,5 @@
+.PHONY: submit
+
 all:
 	make -C step1
 	make -C step2
@@ -11,10 +13,11 @@ submit:
 	cp step2/*.cpp step2/makefile submit/step2
 	cp step3/*.cpp step3/makefile submit/step3
 	cp -f makefile Prj3README typescript.md submit/
-	tar -cvf submit.tar submit/*
+	tar -cvf submit.tar -C submit .
+	rm -rf submit
 
 clean:
 	make -C step1 clean
 	make -C step2 clean
 	make -C step3 clean
-	rm -rf submit submit.tar
+	rm -f submit.tar

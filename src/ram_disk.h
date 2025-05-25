@@ -1,17 +1,15 @@
-#ifndef MEM_STORAGE_H
-#define MEM_STORAGE_H
+#ifndef RAM_DISK_H
+#define RAM_DISK_H
 
-#include <vector>
-#include <stdexcept>
 #include <cstring>
-#include "disk_interface.h"
+#include "storage_interface.h"
 #include "utils/except.h"
 
 namespace cs2313 {
 
-    class mem_storage : public disk_interface {
+    class ram_disk : public storage_interface {
     public:
-        explicit mem_storage(uint64_t cylinders, uint64_t sectors_per_cylinder, uint64_t bytes_per_sector)
+        explicit ram_disk(uint64_t cylinders, uint64_t sectors_per_cylinder, uint64_t bytes_per_sector)
             : cylinders_(cylinders),
               sectors_per_cylinder_(sectors_per_cylinder),
               bytes_per_sector_(bytes_per_sector) {
@@ -38,7 +36,7 @@ namespace cs2313 {
 
         void shutdown() override {}
 
-        ~mem_storage() override {
+        ~ram_disk() override {
             delete[] storage_;
         }
 

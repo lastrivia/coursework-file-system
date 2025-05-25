@@ -5,14 +5,14 @@
 #include <sstream>
 #include <string>
 #include <cstring>
-#include "disk_interface.h"
+#include "storage_interface.h"
 #include "utils/shell_style.h"
 
 namespace cs2313 {
 
     class raw_shell {
     public:
-        explicit raw_shell(disk_interface &disk) :
+        explicit raw_shell(storage_interface &disk) :
             disk_(disk) {
 
             disk_description description = disk_.get_description();
@@ -101,7 +101,7 @@ namespace cs2313 {
         }
 
     private:
-        disk_interface &disk_;
+        storage_interface &disk_;
         uint64_t cylinders_, sectors_per_cylinder_, bytes_per_sector_;
         char *buf_;
     };

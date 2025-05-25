@@ -11,7 +11,7 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 
-#include "disk_interface.h"
+#include "storage_interface.h"
 #include "utils/except.h"
 #include "utils/socket.h"
 #include "utils/misc.h"

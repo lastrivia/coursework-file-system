@@ -1,5 +1,5 @@
-#ifndef BITS_H
-#define BITS_H
+#ifndef MISC_H
+#define MISC_H
 
 #include <cstdint>
 

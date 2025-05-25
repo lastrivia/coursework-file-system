@@ -7,4 +7,4 @@ client: client.cpp $(HEADERS)
 fs: fs.cpp $(HEADERS)
 	g++ fs.cpp -o fs -std=c++20
 clean:
-	rm -f client fs
+	find . -type f ! -name '*.cpp' ! -name 'makefile' -delete

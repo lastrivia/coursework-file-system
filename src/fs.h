@@ -19,7 +19,7 @@ namespace cs2313 {
 
     class file_system {
     public:
-        file_system(disk_interface &disk) :
+        file_system(storage_interface &disk) :
             disk_(disk),
             allocator_(disk_, ALLOC_ROOT),
             description_(disk.get_description()),

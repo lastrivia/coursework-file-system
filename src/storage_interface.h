@@ -1,5 +1,5 @@
-#ifndef DISK_INTERFACE_H
-#define DISK_INTERFACE_H
+#ifndef STORAGE_INTERFACE_H
+#define STORAGE_INTERFACE_H
 
 #include <cstdint>
 
@@ -11,7 +11,7 @@ namespace cs2313 {
         uint64_t bytes_per_sector;
     };
 
-    class disk_interface {
+    class storage_interface {
     public:
         virtual void read(uint64_t sector_addr, char *data) = 0;
 
@@ -21,7 +21,7 @@ namespace cs2313 {
 
         virtual void shutdown() = 0;
 
-        virtual ~disk_interface() = default;
+        virtual ~storage_interface() = default;
     };
 
     typedef unsigned char io_instr;
