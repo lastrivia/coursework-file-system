@@ -75,7 +75,6 @@ namespace cs2313 {
             for (auto &it: node_cache_) {
                 if (node_dirty_[it.first]) {
                     disk_[it.first] = it.second;
-                    // node_dirty_[it.first] = false;
                 }
             }
             node_cache_.clear();

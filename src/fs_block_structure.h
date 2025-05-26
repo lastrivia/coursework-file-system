@@ -112,7 +112,7 @@ namespace cs2313 {
 
             node.header.magic = 0x0909;
             node.header.entries = 0;
-            node.header.entries_capacity = 8;
+            node.header.entries_capacity = 16; // todo hashed ptr
             node.header.tree_depth = 0;
 
             return node;
@@ -204,7 +204,7 @@ namespace cs2313 {
 
             node.header.magic = 0x0909;
             node.header.entries = 1;
-            node.header.entries_capacity = 15;
+            node.header.entries_capacity = 14;
             node.header.tree_depth = 0;
             node.header.free_blocks = init_extent.len;
             node.header.max_cont_blocks = init_extent.len;

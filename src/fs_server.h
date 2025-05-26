@@ -173,6 +173,8 @@ namespace cs2313 {
                             try {
                                 fs_file_handle file = current_folder.open(str_buf.c_str());
                                 std::string content = file.read_all();
+                                if(pos > content.length())
+                                    pos = content.length();
                                 content.insert(pos, data_buf);
                                 file.write_all(content.c_str());
                                 connection_socket.send(FS_REPLY_OK);
@@ -198,6 +200,8 @@ namespace cs2313 {
                             try {
                                 fs_file_handle file = current_folder.open(str_buf.c_str());
                                 std::string content = file.read_all();
+                                if(pos > content.length())
+                                    pos = content.length();
                                 content.erase(pos, len);
                                 file.write_all(content.c_str());
                                 connection_socket.send(FS_REPLY_OK);
