@@ -5,8 +5,9 @@
 #include <sstream>
 #include <string>
 #include <cstring>
+
 #include "storage_interface.h"
-#include "utils/shell_style.h"
+#include "utils/shell.h"
 
 namespace cs2313 {
 
@@ -30,15 +31,18 @@ namespace cs2313 {
 
         void run() {
 
-            std::string line;
+            std::string prompt, line;
 
             const std::string styled_yes = styled("Yes", STYLE_GREEN, STYLE_BOLD);
             const std::string styled_no = styled("No", STYLE_RED, STYLE_BOLD);
 
+            shell_init();
+
             while (true) {
-                std::cout << styled("raw", STYLE_BLUE, STYLE_BOLD) << "$ ";
-                if (!std::getline(std::cin, line))
-                    break;
+                prompt = styled("raw", STYLE_BLUE, STYLE_BOLD) + "$ ";
+                line = shell_input(prompt);
+                if (line.empty())
+                    continue;
 
                 try {
                     std::istringstream iss(line);

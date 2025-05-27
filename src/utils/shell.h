@@ -1,5 +1,8 @@
-#ifndef SHELL_STYLE_H
-#define SHELL_STYLE_H
+#ifndef SHELL_H
+#define SHELL_H
+
+#include <readline/readline.h>
+#include <readline/history.h>
 
 namespace cs2313 {
 
@@ -17,6 +20,30 @@ namespace cs2313 {
         ((oss << styles), ...);
         oss << text << STYLE_RESET;
         return oss.str();
+    }
+
+    inline void shell_init() {
+        using_history();
+    }
+
+    inline std::string shell_input(const std::string &prompt) {
+        char *input = readline(prompt.c_str());
+        if (!input)
+            return "";
+
+        std::string line = input;
+        if (!line.empty()) {
+            for (int i = 0; i < history_length; ++i) {
+                if (history_get(history_base + i) && line == history_get(history_base + i)->line) {
+                    remove_history(i);
+                    break;
+                }
+            }
+            add_history(line.c_str());
+        }
+
+        free(input);
+        return line;
     }
 
 }

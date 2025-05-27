@@ -6,7 +6,7 @@
 #include <string>
 
 #include "fs_protocol.h"
-#include "utils/shell_style.h"
+#include "utils/shell.h"
 #include "utils/socket.h"
 
 namespace cs2313 {
@@ -27,13 +27,17 @@ namespace cs2313 {
             }
 
             bool exit_flag = false;
-            while (!exit_flag) {
-                std::cout << styled("file-system", STYLE_GREEN, STYLE_BOLD) << ":" << styled(path_prompt_, STYLE_BLUE, STYLE_BOLD) << "$ ";
-                std::string input_line;
-                std::getline(std::cin, input_line);
-                if (input_line.empty()) continue;
+            std::string prompt, line;
 
-                std::istringstream iss(input_line);
+            shell_init();
+
+            while (!exit_flag) {
+                prompt = styled("file-system", STYLE_GREEN, STYLE_BOLD) + ":" + styled(path_prompt_, STYLE_BLUE, STYLE_BOLD) + "$ ";
+                line = shell_input(prompt);
+                if (line.empty())
+                    continue;
+
+                std::istringstream iss(line);
                 std::string cmd;
                 std::string name;
                 iss >> cmd;
@@ -154,7 +158,7 @@ namespace cs2313 {
                     if (reply != FS_REPLY_OK) {
                         std::cout << fail_prompt(reply, false, name) << std::endl;
                     }
-                }  else if (cmd == "i") {
+                } else if (cmd == "i") {
                     std::string data;
                     uint64_t pos;
                     if (!(iss >> name >> pos) || !std::getline(iss >> std::ws, data)) {
@@ -169,7 +173,7 @@ namespace cs2313 {
                     if (reply != FS_REPLY_OK) {
                         std::cout << fail_prompt(reply, false, name) << std::endl;
                     }
-                }  else if (cmd == "d") {
+                } else if (cmd == "d") {
                     uint64_t pos, len;
                     if (!(iss >> name >> pos >> len)) {
                         std::cout << "Invalid command format" << std::endl;

@@ -3,7 +3,7 @@ HEADERS := $(shell find ../src -name "*.h")
 all: client fs
 
 client: client.cpp $(HEADERS)
-	g++ client.cpp -o client -std=c++20
+	g++ client.cpp -o client -std=c++20 -lreadline
 fs: fs.cpp $(HEADERS)
 	g++ fs.cpp -o fs -std=c++20
 clean:
