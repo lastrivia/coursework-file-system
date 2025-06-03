@@ -1,6 +1,9 @@
 #ifndef SHELL_H
 #define SHELL_H
 
+#include <iostream>
+#include <unistd.h>
+#include <termios.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 
@@ -44,6 +47,23 @@ namespace cs2313 {
 
         free(input);
         return line;
+    }
+
+    inline std::string get_password() {
+        termios termios_bak;
+        tcgetattr(STDIN_FILENO, &termios_bak);
+
+        termios termios_no_echo = termios_bak;
+        termios_no_echo.c_lflag &= ~ECHO;
+        tcsetattr(STDIN_FILENO, TCSANOW, &termios_no_echo);
+
+        std::string password;
+        std::getline(std::cin, password);
+
+        tcsetattr(STDIN_FILENO, TCSANOW, &termios_bak);
+
+        std::cout << std::endl;
+        return password;
     }
 
 }

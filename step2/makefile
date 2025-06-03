@@ -3,8 +3,8 @@ HEADERS := $(shell find ../src -name "*.h")
 all: client fs
 
 client: client.cpp $(HEADERS)
-	g++ client.cpp -o client -std=c++20 -lreadline
+	g++ client.cpp -o client -std=c++20 -lreadline -lsodium
 fs: fs.cpp $(HEADERS)
-	g++ fs.cpp -o fs -std=c++20
+	g++ fs.cpp -o fs -std=c++20 -lsodium
 clean:
 	find . -type f ! -name '*.cpp' ! -name 'makefile' -delete

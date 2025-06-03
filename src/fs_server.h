@@ -28,14 +28,18 @@ namespace cs2313 {
             fs_folder_handle current_folder = fs_.root_folder();
             std::string str_buf, data_buf;
             std::string path = "/";
+            uint16_t uid = 0;
 
             try {
-                if (fs_.formatted())
-                    connection_socket.send(FS_CONNECTED_REPLY_OK);
-                else
-                    connection_socket.send(FS_CONNECTED_REPLY_NO_FORMAT);
+                std::string username;
+                connection_socket.recv_str(username);
             } catch (except &e) {
-                throw; // todo
+                switch (e.error_code()) {
+                    case ERROR_SOCKET_CLOSED_BY_REMOTE:
+                        return;
+                    default:
+                        throw;
+                }
             }
 
             while (threads_sig_term_.load(std::memory_order_acquire) == false) {
@@ -173,7 +177,7 @@ namespace cs2313 {
                             try {
                                 fs_file_handle file = current_folder.open(str_buf.c_str());
                                 std::string content = file.read_all();
-                                if(pos > content.length())
+                                if (pos > content.length())
                                     pos = content.length();
                                 content.insert(pos, data_buf);
                                 file.write_all(content.c_str());
@@ -200,7 +204,7 @@ namespace cs2313 {
                             try {
                                 fs_file_handle file = current_folder.open(str_buf.c_str());
                                 std::string content = file.read_all();
-                                if(pos > content.length())
+                                if (pos > content.length())
                                     pos = content.length();
                                 content.erase(pos, len);
                                 file.write_all(content.c_str());

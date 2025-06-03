@@ -27,9 +27,8 @@ namespace cs2313 {
 
             directory_node file_root = disk_[FILE_ROOT];
             allocator_node alloc_root = disk_[ALLOC_ROOT];
-            if (file_root.magic == 0x0909 && alloc_root.header.magic == 0x0909)
-                formatted_ = true;
-            else formatted_ = false;
+            if (file_root.magic != 0x0909 || alloc_root.header.magic != 0x0909)
+                format();
         }
 
         void format() {
@@ -37,10 +36,7 @@ namespace cs2313 {
             std::lock_guard<std::mutex> lock(data_mutex_);
             disk_[FILE_ROOT] = directory_node::default_folder();
             disk_[ALLOC_ROOT] = allocator_node::default_root({RESERVED_BLOCKS, max_blocks_ - RESERVED_BLOCKS});
-            formatted_ = true;
         }
-
-        bool formatted() { return formatted_; }
 
         fs_folder_handle root_folder();
 
@@ -49,12 +45,11 @@ namespace cs2313 {
         friend class fs_file_handle;
         friend class fs_folder_handle;
 
-        static constexpr uint64_t FILE_ROOT = 0, ALLOC_ROOT = 1, RESERVED_BLOCKS = 2;
+        static constexpr uint64_t FILE_ROOT = 0, ALLOC_ROOT = 1, USER_ROOT = 2, RESERVED_BLOCKS = 3;
         disk_view disk_;
         disk_description description_;
         uint64_t max_blocks_;
         fs_allocator allocator_;
-        bool formatted_;
         std::mutex data_mutex_; // todo segmented mutex
 
         std::unordered_map<uint64_t, uint32_t> handle_instance_count_;
@@ -252,7 +247,7 @@ namespace cs2313 {
         void create(const char *name, bool is_folder) {
             if (!file_system::is_name_valid(name))
                 throw except(ERROR_FS_NAME_INVALID);
-            if (strlen(name) >= 0x40)
+            if (strlen(name) >= FILE_NAME_LENGTH_MAX)
                 throw except(ERROR_FS_NAME_TOO_LONG);
 
             std::lock_guard<std::mutex> lock(fs_.data_mutex_);
@@ -299,8 +294,8 @@ namespace cs2313 {
 
             if (index != node.header.entries - 1)
                 memmove(
-                    node.tree_data + index * sizeof(uint64_t),
-                    node.tree_data + (index + 1) * sizeof(uint64_t),
+                    node.data + index * sizeof(uint64_t),
+                    node.data + (index + 1) * sizeof(uint64_t),
                     (node.header.entries - 1 - index) * sizeof(uint64_t) // todo hashed pointer
                 );
             --node.header.entries;

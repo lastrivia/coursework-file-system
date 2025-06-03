@@ -20,7 +20,7 @@ namespace cs2313 {
         void run() {
             fs_reply reply;
             client_socket_.recv(reply);
-            if (reply == FS_CONNECTED_REPLY_NO_FORMAT) {
+            if (reply == FS_LOGIN_REPLY_FIRST_OK) {
                 client_socket_.send(FS_INSTR_FORMAT);
                 client_socket_.recv(reply);
                 std::cout << "Disk formatted on the first run" << std::endl;
@@ -223,6 +223,9 @@ namespace cs2313 {
                     break;
                 case FS_REPLY_CAPACITY_EXCEEDED:
                     str += "capacity exceeded";
+                    break;
+                case FS_REPLY_ACCESS_DENIED:
+                    str += "access denied";
                     break;
                 case FS_REPLY_UNKNOWN_ERROR:
                 default:

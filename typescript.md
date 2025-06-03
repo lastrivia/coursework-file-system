@@ -1,4 +1,4 @@
-# Test Guide of Project 3
+# Test Guide for Project 3
 
 ## Build
 
@@ -6,6 +6,13 @@
 make
 ```
 This will generate all executable files for the test.
+
+Before that, please ensure that the dependencies for this project are installed:
+
+```shell
+sudo apt-get install libreadline-dev
+sudo apt-get install libsodium-dev
+```
 
 ---
 
@@ -79,7 +86,7 @@ Usage: disk filename -c cylinders -s sectors_per_cylinder [-b bytes_per_sector=2
 ./disk 1.raw -c 1048576 -s 1048576 -p 10000
 ```
 ```
-[ERROR] 770: Failed to create virtual drive file (Invalid argument)
+[ERROR] 258: Failed to create virtual drive file (Invalid argument)
 ```
 
 * The specified port of the server is in use.
@@ -89,7 +96,7 @@ Usage: disk filename -c cylinders -s sectors_per_cylinder [-b bytes_per_sector=2
 ./disk 2.raw -c 16 -s 16 -p 10000
 ```
 ```
-[ERROR] 257: Socket creation failed (Address already in use)
+[ERROR] 17: Socket creation failed (Address already in use)
 ```
 
 * The input commands to the client is invalid.
@@ -204,7 +211,7 @@ Usage: fs port
 * The client sends an instruction to a file system process that has been terminated. The client will exit then.
 
 ```
-[ERROR] 261: Socket disconnected
+[ERROR] 21: Socket disconnected
 ```
 
 * The input commands to the client is invalid.
